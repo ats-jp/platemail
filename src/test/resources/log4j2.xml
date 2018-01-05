@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE configuration><!-- Eclipse対策：DTDが無いことを警告する問題の回避 -->
+<Configuration status="off">
+	<Appenders>
+		<!-- コンソール出力 -->
+		<Console name="console" target="SYSTEM_OUT">
+			<PatternLayout charset="UTF-8"
+				pattern="%d{yyyy-MM-dd HH:mm:ss.SSS} %-5level [%X{PID}, %t] - %msg%n" />
+		</Console>
+		<!-- ファイル出力 -->
+		<!--<RollingRandomAccessFile name="main" -->
+		<!-- fileName="/some-path/log/platemail.log" filePattern="/some-path/log/platemail-%d{yyyy-MM-dd}-%i.zip"> -->
+		<!-- <PatternLayout charset="UTF-8" -->
+		<!-- pattern="%d{yyyy-MM-dd HH:mm:ss.SSS} %-5level [%X{PID}, %t] - %msg%n" 
+			/> -->
+		<!-- <Policies> -->
+		<!-- ファイルサイズで切り替え -->
+		<!-- <SizeBasedTriggeringPolicy size="20MB" /> -->
+		<!-- 日付が変わったときに切り替え -->
+		<!-- <TimeBasedTriggeringPolicy /> -->
+		<!-- </Policies> -->
+		<!-- 保管する過去ログの件数 -->
+		<!-- この数値を超えた過去ログは削除される -->
+		<!-- <DefaultRolloverStrategy max="100" /> -->
+		<!--</RollingRandomAccessFile> -->
+	</Appenders>
+	<Loggers>
+		<Root level="ALL">
+			<AppenderRef ref="console" />
+			<!-- <AppenderRef ref="main" /> -->
+		</Root>
+		<Logger name="shell-logger" level="info" additivity="false">
+			<AppenderRef ref="console" />
+			<AppenderRef ref="error-log" />
+		</Logger>
+	</Loggers>
+</Configuration>
