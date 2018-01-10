@@ -218,7 +218,7 @@ public class MailTransferProcess extends QueueProcess {
 
 		logger.info(MailTransferProcess.class.getSimpleName() + " end. <" + sentToAddress + ">, mid=<" + listener.getMessageId() + ">");
 
-		//自処理に移るかどうかを返す
+		//次処理に移るかどうかを返す
 		return account.isLocalAccount();
 	}
 
