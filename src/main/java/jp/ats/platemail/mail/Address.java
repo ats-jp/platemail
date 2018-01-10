@@ -4,7 +4,7 @@ import java.io.UnsupportedEncodingException;
 
 import javax.mail.internet.MimeUtility;
 
-import jp.ats.platemail.common.U;
+import jp.ats.platemail.U;
 
 public class Address {
 

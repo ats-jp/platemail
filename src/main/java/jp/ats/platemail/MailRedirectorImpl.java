@@ -1,8 +1,7 @@
-package jp.ats.platemail.mail;
+package jp.ats.platemail;
 
 import java.io.ByteArrayInputStream;
 
-import jp.ats.platemail.common.Config;
 import jp.ats.relay.CommandExecutor;
 
 public class MailRedirectorImpl extends MailRedirector {

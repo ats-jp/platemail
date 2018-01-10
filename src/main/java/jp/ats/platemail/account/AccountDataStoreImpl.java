@@ -15,8 +15,8 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import jp.ats.platemail.common.Config;
-import jp.ats.platemail.common.U;
+import jp.ats.platemail.Config;
+import jp.ats.platemail.U;
 
 public class AccountDataStoreImpl implements AccountDataStore {
 

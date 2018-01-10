@@ -2,7 +2,7 @@ package jp.ats.platemail.account.vam;
 
 import java.nio.file.Paths;
 
-import jp.ats.platemail.common.Config;
+import jp.ats.platemail.Config;
 import jp.ats.relay.CommandExecutor;
 
 public class VamControllerImpl implements VamController {

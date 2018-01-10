@@ -1,11 +1,11 @@
-package jp.ats.platemail.mail;
+package jp.ats.platemail;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-class DummyMailRedirector extends MailRedirector {
+class MailRedirectorStub extends MailRedirector {
 
-	private static final Logger logger = LogManager.getLogger(DummyMailRedirector.class.getName());
+	private static final Logger logger = LogManager.getLogger(MailRedirectorStub.class.getName());
 
 	@Override
 	protected void redirectInternal(byte[] message, String senderAddress, String resentToAddress) {

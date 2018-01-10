@@ -1,4 +1,4 @@
-package jp.ats.platemail.mail;
+package jp.ats.platemail;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -23,6 +23,8 @@ import javax.mail.internet.MimeMessage;
 import javax.mail.internet.MimeMultipart;
 import javax.mail.internet.MimeUtility;
 import javax.mail.util.ByteArrayDataSource;
+
+import jp.ats.platemail.mail.MessageIdGenerator;
 
 public class MailBuilder {
 

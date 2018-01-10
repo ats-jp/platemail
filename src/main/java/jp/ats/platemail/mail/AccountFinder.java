@@ -1,7 +1,7 @@
 package jp.ats.platemail.mail;
 
-import jp.ats.platemail.common.Config;
-import jp.ats.platemail.common.U;
+import jp.ats.platemail.Config;
+import jp.ats.platemail.U;
 
 public class AccountFinder {
 

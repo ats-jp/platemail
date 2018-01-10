@@ -1,4 +1,4 @@
-package jp.ats.platemail.mail;
+package jp.ats.platemail;
 
 import java.io.ByteArrayInputStream;
 import java.nio.charset.StandardCharsets;
@@ -10,8 +10,9 @@ import org.apache.logging.log4j.Logger;
 
 import jp.ats.platemail.account.AccountDataStore;
 import jp.ats.platemail.account.AddressUtils;
-import jp.ats.platemail.common.Config;
-import jp.ats.platemail.common.U;
+import jp.ats.platemail.mail.AccountFinder;
+import jp.ats.platemail.mail.MessageDigest;
+import jp.ats.platemail.mail.MessageIdGenerator;
 import jp.ats.relay.CommandExecutor;
 
 public abstract class MailRedirector {

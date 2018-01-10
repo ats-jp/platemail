@@ -13,11 +13,11 @@ import java.util.stream.Collectors;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
+import jp.ats.platemail.Config;
+import jp.ats.platemail.U;
 import jp.ats.platemail.account.filter.LogicalOperator;
 import jp.ats.platemail.account.vam.VamController;
 import jp.ats.platemail.account.vam.VamResult;
-import jp.ats.platemail.common.Config;
-import jp.ats.platemail.common.U;
 
 public class AccountManager {
 

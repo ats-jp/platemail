@@ -4,7 +4,7 @@ import java.util.function.Function;
 import java.util.regex.Pattern;
 import java.util.regex.PatternSyntaxException;
 
-import jp.ats.platemail.common.U;
+import jp.ats.platemail.U;
 
 /**
  * フィルタの検査部分

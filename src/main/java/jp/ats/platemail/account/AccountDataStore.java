@@ -2,8 +2,8 @@ package jp.ats.platemail.account;
 
 import java.util.Set;
 
-import jp.ats.platemail.common.Config;
-import jp.ats.platemail.common.U;
+import jp.ats.platemail.Config;
+import jp.ats.platemail.U;
 
 /**
  * アカウント情報で必要となるI/Oを定義したインターフェイス

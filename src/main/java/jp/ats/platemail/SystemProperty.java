@@ -1,4 +1,4 @@
-package jp.ats.platemail.common;
+package jp.ats.platemail;
 
 public class SystemProperty {
 

@@ -29,7 +29,7 @@ import javax.mail.internet.ParseException;
 
 import org.jsoup.Jsoup;
 
-import jp.ats.platemail.common.U;
+import jp.ats.platemail.U;
 
 public class MessageParser {
 

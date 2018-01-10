@@ -5,7 +5,7 @@ import java.io.IOException;
 import javax.mail.MessagingException;
 import javax.mail.Part;
 
-import jp.ats.platemail.common.U;
+import jp.ats.platemail.U;
 
 enum PartContext {
 

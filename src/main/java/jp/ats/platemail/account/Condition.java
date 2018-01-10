@@ -3,9 +3,9 @@ package jp.ats.platemail.account;
 import com.google.gson.Gson;
 import com.google.gson.annotations.Expose;
 
+import jp.ats.platemail.U;
 import jp.ats.platemail.account.filter.Target;
 import jp.ats.platemail.account.filter.Test;
-import jp.ats.platemail.common.U;
 
 /**
  * 条件情報

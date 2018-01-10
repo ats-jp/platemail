@@ -1,5 +1,6 @@
 package jp.ats.platemail.process;
 
+import jp.ats.platemail.MailTransferProcess;
 import jp.ats.relay.Shell;
 import jp.ats.relay.TestFileSystemResourceLoader;
 

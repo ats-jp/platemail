@@ -5,7 +5,7 @@ import java.util.List;
 
 import javax.mail.internet.MimeUtility;
 
-import jp.ats.platemail.common.U;
+import jp.ats.platemail.U;
 import jp.ats.platemail.mail.HeaderElement;
 
 /**

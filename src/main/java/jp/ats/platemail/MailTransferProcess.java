@@ -1,4 +1,4 @@
-package jp.ats.platemail.process;
+package jp.ats.platemail;
 
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
@@ -17,10 +17,7 @@ import org.apache.logging.log4j.Logger;
 
 import jp.ats.platemail.account.Account;
 import jp.ats.platemail.account.AccountManager;
-import jp.ats.platemail.common.Config;
-import jp.ats.platemail.common.U;
 import jp.ats.platemail.mail.AccountFinder;
-import jp.ats.platemail.mail.MailRedirector;
 import jp.ats.platemail.mail.MessageParser;
 import jp.ats.platemail.mail.SimpleMessageListener;
 import jp.ats.relay.QueueProcess;

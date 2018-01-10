@@ -4,9 +4,9 @@ import java.io.IOException;
 
 import javax.mail.MessagingException;
 
+import jp.ats.platemail.MailRedirector;
 import jp.ats.platemail.account.filter.MessageTruncator.Result;
 import jp.ats.platemail.mail.AccountFinder;
-import jp.ats.platemail.mail.MailRedirector;
 import jp.ats.platemail.mail.MessageDigest;
 import jp.ats.platemail.mail.MessageParser;
 import jp.ats.platemail.mail.SimpleMessageListener;

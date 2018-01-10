@@ -1,4 +1,4 @@
-package jp.ats.platemail.process;
+package jp.ats.platemail;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
@@ -6,8 +6,7 @@ import java.util.Optional;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import jp.ats.platemail.common.LineSpliterator;
-import jp.ats.platemail.common.LineSpliterator.Brake;
+import jp.ats.platemail.LineSpliterator.Brake;
 
 class FromLineRemover {
 

@@ -10,12 +10,12 @@ import javax.mail.Message.RecipientType;
 import javax.mail.MessagingException;
 import javax.mail.internet.InternetAddress;
 
-import jp.ats.platemail.common.CP932;
-import jp.ats.platemail.common.LineSpliterator;
-import jp.ats.platemail.common.U;
-import jp.ats.platemail.common.LineSpliterator.Brake;
+import jp.ats.platemail.CP932;
+import jp.ats.platemail.LineSpliterator;
+import jp.ats.platemail.MailBuilder;
+import jp.ats.platemail.U;
+import jp.ats.platemail.LineSpliterator.Brake;
 import jp.ats.platemail.mail.Address;
-import jp.ats.platemail.mail.MailBuilder;
 import jp.ats.platemail.mail.MessageDigest;
 import jp.ats.platemail.mail.MessageParser;
 import jp.ats.platemail.mail.PartListener;

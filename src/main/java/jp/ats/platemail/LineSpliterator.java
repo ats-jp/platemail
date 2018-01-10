@@ -1,4 +1,4 @@
-package jp.ats.platemail.common;
+package jp.ats.platemail;
 
 import java.io.IOException;
 import java.io.InputStream;

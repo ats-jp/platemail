@@ -1,4 +1,4 @@
-package jp.ats.platemail.common;
+package jp.ats.platemail;
 
 import java.io.BufferedInputStream;
 import java.io.ByteArrayInputStream;

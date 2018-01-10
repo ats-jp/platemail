@@ -7,8 +7,8 @@ import java.util.function.Consumer;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import jp.ats.platemail.common.Config;
-import jp.ats.platemail.common.U;
+import jp.ats.platemail.Config;
+import jp.ats.platemail.U;
 
 public class Domain implements Comparable<Domain> {
 

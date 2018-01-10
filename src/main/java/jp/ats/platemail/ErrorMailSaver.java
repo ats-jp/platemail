@@ -1,4 +1,4 @@
-package jp.ats.platemail.process;
+package jp.ats.platemail;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -6,8 +6,6 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-
-import jp.ats.platemail.common.Config;
 
 class ErrorMailSaver {
 
