@@ -20,4 +20,12 @@ public interface PartListener extends Listener {
 	default void notifyAttachment(String fileName, InputStream attachment) throws IOException {}
 
 	PartListener createMultipartListener(int multipartIndex);
+
+	default boolean handlesMessageRfc822AsAttachment() {
+		return true;
+	}
+
+	default MessageListener createMessageListener() {
+		throw new UnsupportedOperationException();
+	}
 }

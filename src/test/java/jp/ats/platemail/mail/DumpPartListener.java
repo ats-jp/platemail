@@ -7,8 +7,6 @@ import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 
-import jp.ats.platemail.mail.PartListener;
-
 public class DumpPartListener implements PartListener {
 
 	private final Path home;
@@ -72,5 +70,15 @@ public class DumpPartListener implements PartListener {
 	@Override
 	public PartListener createMultipartListener(int multipartIndex) {
 		return new DumpPartListener(home, multipartIndex);
+	}
+
+	@Override
+	public boolean handlesMessageRfc822AsAttachment() {
+		return false;
+	}
+
+	@Override
+	public MessageListener createMessageListener() {
+		return new DumpMessageListener(home, 0);
 	}
 }

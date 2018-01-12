@@ -212,8 +212,13 @@ public class MessageParser {
 					listener.createMultipartListener(i),
 					multiPart.getBodyPart(i));
 		} else if (part.isMimeType("message/rfc822")) {
-			// partがmessage/rfc822の場合は添付ファイルとして扱う
-			context.processAttachment(this, part, listener);
+			if (listener.handlesMessageRfc822AsAttachment()) {
+				// message/rfc822を添付ファイルとして扱う
+				context.processAttachment(this, part, listener);
+			} else {
+				// message/rfc822を再帰的にparseする
+				new MessageParser(listener.createMessageListener()).start(U.readBytes(part.getInputStream()));
+			}
 		} else if (part.isMimeType("message/partial")) {
 			// partがmessage/partialの場合は添付ファイルとして扱う
 			context.processAttachment(this, part, listener);

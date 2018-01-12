@@ -225,6 +225,13 @@ public class Config {
 	}
 
 	/**
+	 * @return 次処理に受け渡す際、改行コードをCRLFに変換するか
+	 */
+	public String convertsToCrlf() {
+		return properties.getProperty("convert-to-crlf");
+	}
+
+	/**
 	 * @return 転送処理に次処理はあるか
 	 */
 	public String hasNext() {

@@ -28,46 +28,44 @@ public class MailTransferProcess extends QueueProcess {
 
 	public static final String SPEED_FILE_NAME = "transfer.speed";
 
-	private final Config config = Config.getInstance();
-
 	@Override
 	protected Path getQueueDirectory() {
-		return Paths.get(config.getWorkDirectoryForTransfer());
+		return Paths.get(Config.getInstance().getWorkDirectoryForTransfer());
 	}
 
 	@Override
 	protected Path getLockDirectory() {
-		return Paths.get(config.getLockDirectoryForTransfer());
+		return Paths.get(Config.getInstance().getLockDirectoryForTransfer());
 	}
 
 	@Override
 	protected boolean hasNext() {
-		return Boolean.parseBoolean(config.hasNext());
+		return Boolean.parseBoolean(Config.getInstance().hasNext());
 	}
 
 	@Override
 	public boolean usesDatabase() {
-		return Boolean.parseBoolean(config.usesDatabase());
+		return Boolean.parseBoolean(Config.getInstance().usesDatabase());
 	}
 
 	@Override
 	protected String getNextCommandPath() {
-		return config.getNextCommand();
+		return Config.getInstance().getNextCommand();
 	}
 
 	@Override
 	protected Path getNextCommandLockDirectory() {
-		return Paths.get(config.getLockDirectoryForNext());
+		return Paths.get(Config.getInstance().getLockDirectoryForNext());
 	}
 
 	@Override
 	protected Path getNextCommandQueueDirectory() {
-		return Paths.get(config.getWorkDirectoryForNext());
+		return Paths.get(Config.getInstance().getWorkDirectoryForNext());
 	}
 
 	@Override
 	protected int getMaxConcurrency() {
-		return Integer.parseInt(config.getMaxConcurrency());
+		return Integer.parseInt(Config.getInstance().getMaxConcurrency());
 	}
 
 	@Override
@@ -79,7 +77,7 @@ public class MailTransferProcess extends QueueProcess {
 	protected void postProcessWithLock() {
 		//自身のプロセスロックを取得している中で、トリガーの多重起動を抑制するロックファイルを削除
 		try {
-			Files.deleteIfExists(Paths.get(config.getLockDirectoryForTrigger()));
+			Files.deleteIfExists(Paths.get(Config.getInstance().getLockDirectoryForTrigger()));
 		} catch (IOException e) {
 			throw new RuntimeException(e);
 		}
@@ -107,11 +105,13 @@ public class MailTransferProcess extends QueueProcess {
 			throw error(logger, "処理中に、想定外のエラーが発生しました", e);
 		}
 
-		//以後のプロセスが変換しなくても済むように、改行コードをCRLF化したデータで書き換え
-		try (OutputStream output = new BufferedOutputStream(Files.newOutputStream(eml))) {
-			U.sendBytes(new ByteArrayInputStream(bytes), output);
-		} catch (IOException e) {
-			throw error(logger, "処理中に、想定外のエラーが発生しました", e);
+		if (Boolean.parseBoolean(Config.getInstance().convertsToCrlf())) {
+			//以後のプロセスが変換しなくても済むように、改行コードをCRLF化したデータで書き換え
+			try (OutputStream output = new BufferedOutputStream(Files.newOutputStream(eml))) {
+				U.sendBytes(new ByteArrayInputStream(bytes), output);
+			} catch (IOException e) {
+				throw error(logger, "処理中に、想定外のエラーが発生しました", e);
+			}
 		}
 
 		return eml;
@@ -137,6 +137,7 @@ public class MailTransferProcess extends QueueProcess {
 	}
 
 	private boolean execute(byte[] message) throws Exception {
+		Config config = Config.getInstance();
 		SimpleMessageListener listener = new SimpleMessageListener();
 		new MessageParser(listener).start(message);
 
@@ -233,7 +234,7 @@ public class MailTransferProcess extends QueueProcess {
 	}
 
 	private boolean checkBounceMail(SimpleMessageListener listener) {
-		String bounceMailFrom = config.getBounceMailFrom();
+		String bounceMailFrom = Config.getInstance().getBounceMailFrom();
 		boolean isBounceMail = listener.getHeaderElements()
 			.stream()
 			.filter(header -> header.getHeader().equalsIgnoreCase("from") && header.getValue().contains(bounceMailFrom))
