@@ -70,6 +70,11 @@
 			<version>1.11.2</version>
 		</dependency>
 		<dependency>
+			<groupId>me.normanmaurer.niosmtp</groupId>
+			<artifactId>niosmtp</artifactId>
+			<version>0.1.2</version>
+		</dependency>
+		<dependency>
 			<groupId>jp.ats</groupId>
 			<artifactId>relay</artifactId>
 			<version>0.0.1</version>

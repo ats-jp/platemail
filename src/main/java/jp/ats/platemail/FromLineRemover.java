@@ -11,7 +11,7 @@ import jp.ats.platemail.LineSpliterator.Brake;
 class FromLineRemover {
 
 	//メールアドレス形式(xxx@xxx)ではない場合(MAILER-DAEMON)があるのでFromの後に@を入れない
-	private static final Pattern fromLinePattern = Pattern.compile("^From +[^: ]+ +(.+)$");
+	private static final Pattern fromLinePattern = Pattern.compile("^From +([^: ]*) +(.+)$");
 
 	//先頭行がmboxのFrom行である場合、除去する
 	static Result remove(byte[] messageBytes) throws IOException {
@@ -33,7 +33,8 @@ class FromLineRemover {
 			byte[] exculdeFirstLineBytes = new byte[messageBytes.length - firstLineLength[0]];
 			System.arraycopy(messageBytes, firstLineLength[0], exculdeFirstLineBytes, 0, exculdeFirstLineBytes.length);
 			result.messageBytes = exculdeFirstLineBytes;
-			result.fromLineTimestamp = Optional.ofNullable(matcher.group(1));
+			result.fromAddress = Optional.ofNullable(matcher.group(1));
+			result.fromLineTimestamp = Optional.ofNullable(matcher.group(2));
 		} else {
 			result.messageBytes = messageBytes;
 			result.fromLineTimestamp = Optional.empty();
@@ -45,6 +46,8 @@ class FromLineRemover {
 	static class Result {
 
 		byte[] messageBytes;
+
+		Optional<String> fromAddress;
 
 		Optional<String> fromLineTimestamp;
 	}

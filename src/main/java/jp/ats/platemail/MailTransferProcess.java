@@ -28,6 +28,13 @@ public class MailTransferProcess extends QueueProcess {
 
 	public static final String SPEED_FILE_NAME = "transfer.speed";
 
+	private final boolean convertsCrlf;
+
+	public MailTransferProcess() {
+		String convertsCrlfString = Config.getInstance().convertsToCrlf();
+		convertsCrlf = convertsCrlfString == null ? true : Boolean.parseBoolean(convertsCrlfString);
+	}
+
 	@Override
 	protected Path getQueueDirectory() {
 		return Paths.get(Config.getInstance().getWorkDirectoryForTransfer());
@@ -65,7 +72,7 @@ public class MailTransferProcess extends QueueProcess {
 
 	@Override
 	protected int getMaxConcurrency() {
-		return Integer.parseInt(Config.getInstance().getMaxConcurrency());
+		return Integer.parseInt(Config.getInstance().getMaxConcurrencyOfTransfer());
 	}
 
 	@Override
@@ -96,21 +103,21 @@ public class MailTransferProcess extends QueueProcess {
 				result = execute(message);
 			} catch (Exception e) {
 				Path path = ErrorMailSaver.saveEvidence("mail-transfer", message);
-				throw error(logger, "処理中に、想定外のエラーが発生しました。 eml=[" + path.toAbsolutePath() + "]", e);
+				throw ProcessUtils.error(logger, "処理中に、想定外のエラーが発生しました。 eml=[" + path.toAbsolutePath() + "]", e);
 			}
 
 			//falseの場合、ローカルアカウントではないので、以降の処理に行かないように後続処理を行わない
 			if (!result) return null;
 		} catch (IOException e) {
-			throw error(logger, "処理中に、想定外のエラーが発生しました", e);
+			throw ProcessUtils.error(logger, "処理中に、想定外のエラーが発生しました", e);
 		}
 
-		if (Boolean.parseBoolean(Config.getInstance().convertsToCrlf())) {
+		if (convertsCrlf) {
 			//以後のプロセスが変換しなくても済むように、改行コードをCRLF化したデータで書き換え
 			try (OutputStream output = new BufferedOutputStream(Files.newOutputStream(eml))) {
 				U.sendBytes(new ByteArrayInputStream(bytes), output);
 			} catch (IOException e) {
-				throw error(logger, "処理中に、想定外のエラーが発生しました", e);
+				throw ProcessUtils.error(logger, "処理中に、想定外のエラーが発生しました", e);
 			}
 		}
 
@@ -129,11 +136,6 @@ public class MailTransferProcess extends QueueProcess {
 		}
 
 		return manager;
-	}
-
-	private static RuntimeException error(Logger logger, String message, Throwable t) {
-		logger.error(message, t);
-		return new RuntimeException(message, t);
 	}
 
 	private boolean execute(byte[] message) throws Exception {

@@ -220,8 +220,8 @@ public class Config {
 	/**
 	 * @return 転送処理最大並列スレッド数
 	 */
-	public String getMaxConcurrency() {
-		return properties.getProperty("max-concurrency");
+	public String getMaxConcurrencyOfTransfer() {
+		return properties.getProperty("transfer-max-concurrency");
 	}
 
 	/**
@@ -264,5 +264,26 @@ public class Config {
 	 */
 	public String getWorkDirectoryForNext() {
 		return properties.getProperty("dir-for-next");
+	}
+
+	/**
+	 * @return LMTP転送処理のメール取得ディレクトリ
+	 */
+	public String getWorkDirectoryForLmtp() {
+		return properties.getProperty("dir-for-lmtp");
+	}
+
+	/**
+	 * @return LMTP転送処理のロックフラグ用ディレクトリ
+	 */
+	public String getLockDirectoryForLmtp() {
+		return properties.getProperty("lockdir-for-lmtp");
+	}
+
+	/**
+	 * @return LMTP処理最大並列スレッド数
+	 */
+	public String getMaxConcurrencyOfLmtp() {
+		return properties.getProperty("lmtp-max-concurrency");
 	}
 }
