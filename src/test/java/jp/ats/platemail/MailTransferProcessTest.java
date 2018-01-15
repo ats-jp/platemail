@@ -1,4 +1,4 @@
-package jp.ats.platemail.process;
+package jp.ats.platemail;
 
 import jp.ats.platemail.MailTransferProcess;
 import jp.ats.relay.Shell;
