@@ -9,7 +9,7 @@ public class AccountFinder {
 
 	/**
 	 * メール内の情報から、配信先を検索し返す<br>
-	 * ・配信先を特定するために、X-Original-Toヘッダに入っているアドレスを使用してRHKメールマスタの検索を行う<br>
+	 * ・配信先を特定するために、X-Original-Toヘッダに入っているアドレスを使用する<br>
 	 * これは、メールサーバとしてpostfixを使用する前提の動作である（postfixがX-Original-Toヘッダを付与する仕様であるため）<br>
 	 * X-Original-Toヘッダは、転送されてきたメールなどで重複することがあり得る<br>
 	 * 重複している場合は、最前方にあるものが今回の配信先なので、それを使用する（postfixの場合、常に前方にX-Original-Toを付加するため）<br>
@@ -34,7 +34,7 @@ public class AccountFinder {
 	}
 
 	/**
-	 * Delivered-Toの代替としてTOがあればTOのアドレスを、なければCCのアドレスを返す
+	 * X-Original-Toがない場合の代替として、TOがあればTOのアドレスを、なければCCのアドレスを返す
 	 */
 	private static String findAlternateAddress(MessageDigest source) {
 		return source.getRecipients()
