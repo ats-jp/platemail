@@ -23,6 +23,8 @@ import java.util.regex.Pattern;
  */
 public class LmtpClient {
 
+	private static final String defaultHost = "localhost";
+
 	private static final String senderHeaderName = "Return-Path";
 
 	private static final String recipientHeaderName = "X-Original-To";
@@ -35,7 +37,7 @@ public class LmtpClient {
 		try (Socket socket = new Socket(InetAddress.getLocalHost(), DEFAULT_PORT);
 			InputStream input = socket.getInputStream();
 			OutputStream output = socket.getOutputStream()) {
-			send("localhost", input, output, message);
+			send(defaultHost, input, output, message);
 		}
 	}
 
@@ -65,30 +67,32 @@ public class LmtpClient {
 
 		boolean[] endsHeader = { false };
 		boolean[] endsWithCrlf = { false };
-		//本文のCRLF.を変換して書き込み
 		new LineSpliterator().split(new ByteArrayInputStream(message), (buffer, length) -> {
 			try {
 				if (!endsHeader[0]) {
-					if (length == 2 && buffer[0] == '\r' && buffer[1] == '\n') {
-						if (!detector.hasSenderAndRecipient())
-							//Postfixから受け取ったメールであれば両方必ずあるはず
-							//なのでない場合は以上とみなす
-							throw new IllegalStateException(detector.getSenderAndRecipient());
+					//header処理中
+					if (length == 2 && buffer[0] == '\r' && buffer[1] == '\n') { //CRLFのみの行（空行）でheaderの終わりを判定
+						//区切りの空行に到達
 
-						//CRLFのみの行（空行）でヘッダの終わりを判定
+						detector.checkSenderAndRecipient();
+
 						endsHeader[0] = true;
 
 						startCommunicate(reply, output, host, detector.sender, detector.recipient);
 
-						//全Header
+						//全header write
 						output.write(header.toByteArray());
-						//空行
+						//区切りの空行 write
 						output.write(buffer, 0, length);
 					} else {
+						//まだ区切りの空行に到達していない
+
 						detector.add(buffer, length);
 						header.write(buffer, 0, length);
 					}
 				} else {
+					//body処理中
+
 					//body内の行頭の . は、 .. に変換
 					if (buffer[0] == '.') output.write('.');
 					output.write(buffer, 0, length);
@@ -103,10 +107,10 @@ public class LmtpClient {
 
 		if (endsWithCrlf[0]) {
 			//最後がCRLFの場合は、 .<CRLF>
-			write(output, "." + CRLF);
+			write(output, ".", CRLF);
 		} else {
 			//最後がCRLFではない場合は、 <CRLF>.<CRLF>
-			write(output, CRLF + "." + CRLF);
+			write(output, CRLF, ".", CRLF);
 		}
 
 		//250 OK
@@ -114,7 +118,7 @@ public class LmtpClient {
 		//452 <recipient@foo.edu> is temporarily over quota
 		readReply(reply, 250);
 
-		write(output, "QUIT" + CRLF);
+		write(output, "QUIT", CRLF);
 
 		//221 foo.edu closing connection
 		readReply(reply, 221);
@@ -130,26 +134,28 @@ public class LmtpClient {
 		//220 foo.edu LMTP server ready
 		readReply(reply, 220);
 
-		write(output, "LHLO " + host + CRLF);
+		write(output, "LHLO ", host, CRLF);
 
 		//250-foo.edu
 		//250-PIPELINING
+		// :
+		// :
 		//250 SIZE
 		while (readReply(reply, 250));
 
-		write(output, "MAIL FROM:<" + sender + ">" + CRLF);
+		write(output, "MAIL FROM:<", sender, ">", CRLF);
 
 		//250 OK
 		readReply(reply, 250);
 
-		write(output, "RCPT TO:<" + recipient + ">" + CRLF);
+		write(output, "RCPT TO:<", recipient, ">", CRLF);
 
 		//250 OK
 		//or
 		//550 No such user here
 		readReply(reply, 250);
 
-		write(output, "DATA" + CRLF);
+		write(output, "DATA", CRLF);
 
 		//354 Start mail input; end with <CRLF>.<CRLF>
 		readReply(reply, 354);
@@ -191,12 +197,13 @@ public class LmtpClient {
 			}
 		}
 
-		private boolean hasSenderAndRecipient() {
-			return sender != null && recipient != null;
-		}
+		private void checkSenderAndRecipient() {
+			if (sender != null && recipient != null)
+				return;
 
-		private String getSenderAndRecipient() {
-			return "sender:<" + sender + ">, recipient:<" + recipient + ">";
+			//Postfixから受け取ったメールであれば両方必ずあるはず
+			//なのでない場合は以上とみなす
+			throw new IllegalStateException("sender:<" + sender + ">, recipient:<" + recipient + ">");
 		}
 
 		private static String getHeaderName(String target) {
@@ -218,8 +225,11 @@ public class LmtpClient {
 		}
 	}
 
-	private static void write(OutputStream output, String data) throws IOException {
-		output.write(data.getBytes(StandardCharsets.UTF_8));
+	private static void write(OutputStream output, String... datas) throws IOException {
+		for (String data : datas) {
+			output.write(data.getBytes(StandardCharsets.UTF_8));
+		}
+
 		output.flush();
 	}
 
