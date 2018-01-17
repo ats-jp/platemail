@@ -9,6 +9,8 @@ import java.io.OutputStream;
 import java.net.InetAddress;
 import java.net.Socket;
 import java.nio.charset.StandardCharsets;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -57,7 +59,7 @@ public class LmtpClient {
 			try {
 				if (!endsHeader[0]) {
 					if (length == 2 && buffer[0] == '\r' && buffer[1] == '\n') {
-						if (detector.hasSenderAndRecipient())
+						if (!detector.hasSenderAndRecipient())
 							//Postfixから受け取ったメールであれば両方必ずあるはず
 							//なのでない場合は以上とみなす
 							throw new IllegalStateException(detector.getSenderAndRecipient());
@@ -149,7 +151,7 @@ public class LmtpClient {
 
 	private static class EnvelopeDetector {
 
-		private final StringBuilder builder = new StringBuilder();
+		private final List<String> buffer = new LinkedList<>();
 
 		private String sender;
 
@@ -160,11 +162,14 @@ public class LmtpClient {
 		private static final Pattern addressExtract = Pattern.compile("<([^>]+)>");
 
 		private void add(String line) {
-			builder.append(line);
+			buffer.add(line);
 
 			if (isFolding.matcher(line).find()) return;
 
-			String field = builder.toString();
+			String field = String.join("", buffer);
+
+			buffer.clear();
+
 			String name = getHeaderName(field);
 
 			if (sender == null && name.equalsIgnoreCase(senderHeaderName)) {
@@ -191,9 +196,9 @@ public class LmtpClient {
 		private static String extractAddress(String target) {
 			int colonIndex = target.indexOf(':');
 			if (colonIndex == -1) return null;
-			String body = target.substring(0, colonIndex);
+			String body = target.substring(colonIndex + 1);
 
-			Matcher matcher = addressExtract.matcher(target);
+			Matcher matcher = addressExtract.matcher(body);
 
 			if (matcher.find()) return matcher.group(1);
 
