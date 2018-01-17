@@ -1,6 +1,7 @@
 package jp.ats.platemail;
 
 import java.io.BufferedReader;
+import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -30,9 +31,17 @@ public class LmtpClient {
 
 	private static final String CRLF = "\r\n";
 
+	public static void send(byte[] message) throws IOException {
+		try (Socket socket = new Socket(InetAddress.getLocalHost(), DEFAULT_PORT);
+			InputStream input = socket.getInputStream();
+			OutputStream output = socket.getOutputStream()) {
+			send("localhost", input, output, message);
+		}
+	}
+
 	public static void send(
 		String host,
-		InputStream message)
+		byte[] message)
 		throws IOException {
 		try (Socket socket = new Socket(InetAddress.getLocalHost(), DEFAULT_PORT);
 			InputStream input = socket.getInputStream();
@@ -45,9 +54,11 @@ public class LmtpClient {
 		String host,
 		InputStream input,
 		OutputStream output,
-		InputStream message)
+		byte[] message)
 		throws IOException {
+		//ヘッダをためておくバッファ
 		ByteArrayOutputStream header = new ByteArrayOutputStream();
+
 		EnvelopeDetector detector = new EnvelopeDetector();
 
 		BufferedReader reply = new BufferedReader(new InputStreamReader(input));
@@ -55,7 +66,7 @@ public class LmtpClient {
 		boolean[] endsHeader = { false };
 		boolean[] endsWithCrlf = { false };
 		//本文のCRLF.を変換して書き込み
-		new LineSpliterator().split(message, (buffer, length) -> {
+		new LineSpliterator().split(new ByteArrayInputStream(message), (buffer, length) -> {
 			try {
 				if (!endsHeader[0]) {
 					if (length == 2 && buffer[0] == '\r' && buffer[1] == '\n') {
@@ -74,8 +85,7 @@ public class LmtpClient {
 						//空行
 						output.write(buffer, 0, length);
 					} else {
-						String line = new String(buffer, 0, length - 2 /*改行コード(CRLF)分削除*/, StandardCharsets.US_ASCII);
-						detector.add(line);
+						detector.add(buffer, length);
 						header.write(buffer, 0, length);
 					}
 				} else {
@@ -84,11 +94,7 @@ public class LmtpClient {
 					output.write(buffer, 0, length);
 
 					//行末がCRLFかを判定
-					if (length > 2 && buffer[length - 1] == '\n' && buffer[length - 2] == '\r') {
-						endsWithCrlf[0] = true;
-					} else {
-						endsWithCrlf[0] = false;
-					}
+					endsWithCrlf[0] = length > 2 && buffer[length - 1] == '\n' && buffer[length - 2] == '\r';
 				}
 			} catch (IOException e) {
 				throw new IllegalStateException(e);
@@ -149,7 +155,10 @@ public class LmtpClient {
 		readReply(reply, 354);
 	}
 
+	//エンベロープ情報（送信者と宛先）抽出
 	private static class EnvelopeDetector {
+
+		private static final int newLineLength = 2;
 
 		private final List<String> buffer = new LinkedList<>();
 
@@ -161,9 +170,12 @@ public class LmtpClient {
 
 		private static final Pattern addressExtract = Pattern.compile("<([^>]+)>");
 
-		private void add(String line) {
+		private void add(byte[] bytes, int length) {
+			String line = new String(bytes, 0, length - newLineLength, StandardCharsets.US_ASCII);
+
 			buffer.add(line);
 
+			//折り畳みヘッダフィールドの場合、次行へ
 			if (isFolding.matcher(line).find()) return;
 
 			String field = String.join("", buffer);
