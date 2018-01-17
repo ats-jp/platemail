@@ -70,10 +70,11 @@ public class LmtpClient {
 		new LineSpliterator().split(new ByteArrayInputStream(message), (buffer, length) -> {
 			try {
 				if (!endsHeader[0]) {
-					//header処理中
+					//header処理
 					if (length == 2 && buffer[0] == '\r' && buffer[1] == '\n') { //CRLFのみの行（空行）でheaderの終わりを判定
 						//区切りの空行に到達
 
+						//senderとreceipientを検出できたかどうかチェック
 						detector.checkSenderAndRecipient();
 
 						endsHeader[0] = true;
@@ -85,13 +86,14 @@ public class LmtpClient {
 						//区切りの空行 write
 						output.write(buffer, 0, length);
 					} else {
+						//header処理中
 						//まだ区切りの空行に到達していない
 
 						detector.add(buffer, length);
 						header.write(buffer, 0, length);
 					}
 				} else {
-					//body処理中
+					//body処理
 
 					//body内の行頭の . は、 .. に変換
 					if (buffer[0] == '.') output.write('.');
@@ -161,6 +163,26 @@ public class LmtpClient {
 		readReply(reply, 354);
 	}
 
+	private static void write(OutputStream output, String... datas) throws IOException {
+		for (String data : datas) {
+			output.write(data.getBytes(StandardCharsets.UTF_8));
+		}
+
+		output.flush();
+	}
+
+	private static boolean readReply(BufferedReader reader, int successCode) throws IOException {
+		String code = String.valueOf(successCode);
+		int continueMarkIndex = code.length();
+		String line = reader.readLine();
+		if (!line.startsWith(code)) {
+			String errorCode = line.split("[ -]")[0];
+			throw new LmtpServerException(Integer.parseInt(errorCode), line);
+		}
+
+		return line.charAt(continueMarkIndex) == '-';
+	}
+
 	//エンベロープ情報（送信者と宛先）抽出
 	private static class EnvelopeDetector {
 
@@ -223,25 +245,5 @@ public class LmtpClient {
 
 			return U.removeWhiteSpaces(body);
 		}
-	}
-
-	private static void write(OutputStream output, String... datas) throws IOException {
-		for (String data : datas) {
-			output.write(data.getBytes(StandardCharsets.UTF_8));
-		}
-
-		output.flush();
-	}
-
-	private static boolean readReply(BufferedReader reader, int successCode) throws IOException {
-		String code = String.valueOf(successCode);
-		int continueMarkIndex = code.length();
-		String line = reader.readLine();
-		if (!line.startsWith(code)) {
-			String errorCode = line.split("[ -]")[0];
-			throw new LmtpServerException(Integer.parseInt(errorCode), line);
-		}
-
-		return line.charAt(continueMarkIndex) == '-';
 	}
 }
