@@ -17,7 +17,7 @@ public interface Locker {
 		return new LockerImpl(dataStore);
 	}
 
-	static Locker getDummyInstance() {
+	static Locker getStubInstance() {
 		return new LockerStub();
 	}
 

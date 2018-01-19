@@ -56,7 +56,7 @@ public class AccountManager {
 		return new AccountManager(
 			config,
 			U.getInstance(config.getAccountDataStoreClass(), config),
-			Locker.getDummyInstance());
+			Locker.getStubInstance());
 	}
 
 	private AccountManager(Config config, AccountDataStore dataStore, Locker locker) {
