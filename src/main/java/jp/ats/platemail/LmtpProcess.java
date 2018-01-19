@@ -8,6 +8,7 @@ import java.nio.file.Paths;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import jp.ats.platemail.lmtp.LmtpClient;
 import jp.ats.relay.QueueProcess;
 
 public class LmtpProcess extends QueueProcess {

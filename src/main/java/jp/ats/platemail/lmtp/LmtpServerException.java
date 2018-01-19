@@ -1,4 +1,4 @@
-package jp.ats.platemail;
+package jp.ats.platemail.lmtp;
 
 @SuppressWarnings("serial")
 public class LmtpServerException extends RuntimeException {

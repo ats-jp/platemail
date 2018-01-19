@@ -5,6 +5,7 @@ import java.io.OutputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 
+import jp.ats.platemail.lmtp.LmtpClient;
 import jp.ats.platemail.mail.DevelopUtils;
 
 public class LmtpClientTest {
