@@ -69,17 +69,20 @@ public class AccountManager {
 		dataStore.getDomains().forEach(domain -> domains.put(domain, new LinkedList<>()));
 
 		locker.lock();
+		String json;
 		try {
-			root = readWithoutLock(gson());
-
-			//filterでmacroを参照するので先に初期化
-			root.getMacros().forEach((oid, macro) -> regist(macro));
-			root.getAccounts().forEach((address, account) -> init(account));
+			json = dataStore.readJson();
 			//lock内で更新
 			jsonTimestamp = dataStore.getJsonLastModified();
 		} finally {
 			locker.unlock();
 		}
+
+		root = createRoot(json, gson());
+
+		//filterでmacroを参照するので先に初期化
+		root.getMacros().forEach((oid, macro) -> regist(macro));
+		root.getAccounts().forEach((address, account) -> init(account));
 	}
 
 	/**
@@ -292,34 +295,35 @@ public class AccountManager {
 	 */
 	public Result persist() throws AlreadyUpdatedException {
 		Gson gson = gson();
+		VamController vamController = U.getInstance(config.getVamControllerClass(), config);
+
+		VamResult vamResult;
+		String json;
+
 		locker.lock();
 		try {
-
 			//今読み込んだ保存側
 			//今から登録更新削除する対象となるアカウントが、この中で既に更新されているか検査する
-			Root storedRoot = readWithoutLock(gson);
+			Root storedRoot = createRoot(dataStore.readJson(), gson);
 
 			persistMacros(storedRoot);
 
-			VamController vamController = U.getInstance(config.getVamControllerClass(), config);
 			persistAccounts(storedRoot, vamController);
 
 			root.update();
 
-			VamResult vamResult = vamController.commit();
+			vamResult = vamController.commit();
 
-			String json = gson.toJson(root);
+			json = gson.toJson(root);
 			dataStore.writeJson(json);
 
 			//lock内で更新
 			jsonTimestamp = dataStore.getJsonLastModified();
-
-			Result result = new Result(vamResult, json);
-
-			return result;
 		} finally {
 			locker.unlock();
 		}
+
+		return new Result(vamResult, json);
 	}
 
 	/**
@@ -493,11 +497,8 @@ public class AccountManager {
 			.create();
 	}
 
-	private Root readWithoutLock(Gson gson) {
-		String json = dataStore.readJson();
-
+	private Root createRoot(String json, Gson gson) {
 		if (!U.presents(json)) return new Root();
-
 		return gson.fromJson(json, Root.class);
 	}
 }

@@ -18,7 +18,7 @@ public interface Locker {
 	}
 
 	static Locker getDummyInstance() {
-		return new DummyLocker();
+		return new LockerStub();
 	}
 
 	class LockerImpl implements Locker {
@@ -55,9 +55,9 @@ public interface Locker {
 		}
 	}
 
-	class DummyLocker implements Locker {
+	class LockerStub implements Locker {
 
-		private DummyLocker() {}
+		private LockerStub() {}
 
 		@Override
 		public void lock() {}
