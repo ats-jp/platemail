@@ -72,7 +72,7 @@ public class LmtpProcess extends QueueProcess {
 		}
 
 		try {
-			LmtpClient.send(message);
+			LmtpClient.execute(message);
 			return null;
 		} catch (Exception e) {
 			Path path = ErrorMailSaver.saveEvidence("mail-lmtp", message);

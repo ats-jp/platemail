@@ -17,6 +17,6 @@ public class LmtpClientTest {
 		InputStream message = Files.newInputStream(testDir.resolve("input.eml"));
 		OutputStream output = Files.newOutputStream(testDir.resolve("output.txt"));
 
-		LmtpClient.send("localhost", input, output, U.readBytes(message));
+		LmtpClient.execute("localhost", input, output, U.readBytes(message));
 	}
 }

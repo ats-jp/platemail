@@ -21,26 +21,26 @@ public class LmtpClient {
 
 	private static final int DEFAULT_PORT = 24;
 
-	public static void send(byte[] message) throws IOException {
+	public static void execute(byte[] message) throws IOException {
 		try (Socket socket = new Socket(InetAddress.getLocalHost(), DEFAULT_PORT);
 			InputStream input = socket.getInputStream();
 			OutputStream output = socket.getOutputStream()) {
-			send(defaultHost, input, output, message);
+			execute(defaultHost, input, output, message);
 		}
 	}
 
-	public static void send(
+	public static void execute(
 		String host,
 		byte[] message)
 		throws IOException {
 		try (Socket socket = new Socket(InetAddress.getLocalHost(), DEFAULT_PORT);
 			InputStream input = socket.getInputStream();
 			OutputStream output = socket.getOutputStream()) {
-			send(host, input, output, message);
+			execute(host, input, output, message);
 		}
 	}
 
-	public static void send(
+	public static void execute(
 		String host,
 		InputStream input,
 		OutputStream output,
