@@ -61,7 +61,7 @@ public class LmtpClient {
 		//ヘッダをためておくバッファ
 		ByteArrayOutputStream header = new ByteArrayOutputStream();
 
-		EnvelopeDetector detector = new EnvelopeDetector();
+		EnvelopeInfoDetector detector = new EnvelopeInfoDetector();
 
 		BufferedReader reply = new BufferedReader(new InputStreamReader(input));
 
@@ -184,9 +184,10 @@ public class LmtpClient {
 	}
 
 	//エンベロープ情報（送信者と宛先）抽出
-	private static class EnvelopeDetector {
+	private static class EnvelopeInfoDetector {
 
-		private static final int newLineLength = 2;
+		//CRLFのバイト長
+		private static final int crlfLength = CRLF.length();
 
 		private final List<String> buffer = new LinkedList<>();
 
@@ -199,7 +200,7 @@ public class LmtpClient {
 		private static final Pattern addressExtract = Pattern.compile("<([^>]+)>");
 
 		private void add(byte[] bytes, int length) {
-			String line = new String(bytes, 0, length - newLineLength, StandardCharsets.US_ASCII);
+			String line = new String(bytes, 0, length - crlfLength, StandardCharsets.US_ASCII);
 
 			buffer.add(line);
 
