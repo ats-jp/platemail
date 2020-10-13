@@ -1,6 +1,7 @@
 package jp.ats.platemail.mail;
 
-import static jp.ats.platemail.mail.DevelopUtils.*;
+import static jp.ats.platemail.mail.DevelopUtils.care;
+import static jp.ats.platemail.mail.DevelopUtils.format;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
@@ -9,9 +10,6 @@ import java.nio.file.Path;
 import java.util.Date;
 
 import javax.mail.Message.RecipientType;
-
-import jp.ats.platemail.mail.MessageListener;
-import jp.ats.platemail.mail.PartListener;
 
 public class DumpMessageListener implements MessageListener {
 

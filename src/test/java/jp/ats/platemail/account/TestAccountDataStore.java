@@ -4,8 +4,6 @@ import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 
-import jp.ats.platemail.account.AccountDataStore;
-
 public class TestAccountDataStore implements AccountDataStore {
 
 	private static String json;

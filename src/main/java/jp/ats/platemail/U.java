@@ -111,7 +111,7 @@ public class U {
 			Class<?> clazz = Class.forName(className);
 
 			@SuppressWarnings("unchecked")
-			T instance = (T) clazz.newInstance();
+			T instance = (T) clazz.getConstructor().newInstance();
 
 			return instance;
 		} catch (Exception e) {
@@ -129,7 +129,7 @@ public class U {
 			} catch (NoSuchMethodException e) {
 				//Configがパラメータのコンストラクタがない場合、パラメータなしのコンストラクタを使用する
 				@SuppressWarnings("unchecked")
-				T instance = (T) clazz.newInstance();
+				T instance = (T) clazz.getConstructor().newInstance();
 				return instance;
 			}
 

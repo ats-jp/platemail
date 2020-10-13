@@ -5,7 +5,6 @@ import java.nio.file.Path;
 import java.util.stream.IntStream;
 
 import jp.ats.platemail.SystemProperty;
-import jp.ats.platemail.mail.MessageParser;
 
 public class MessageParserTest {
 
