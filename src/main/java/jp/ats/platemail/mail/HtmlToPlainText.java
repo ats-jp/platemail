@@ -1,6 +1,6 @@
 package jp.ats.platemail.mail;
 
-import org.jsoup.helper.StringUtil;
+import org.jsoup.internal.StringUtil;
 import org.jsoup.nodes.Element;
 import org.jsoup.nodes.Node;
 import org.jsoup.nodes.TextNode;
